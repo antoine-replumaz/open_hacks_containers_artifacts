@@ -45,16 +45,16 @@ curl -i -X GET 'http://localhost:8084/api/user/healthcheck'
 az login
 
 >/src/poi
-az acr build -r registrybro8635 --build-arg IMAGE_VERSION="1.0" --build-arg IMAGE_CREATE_DATE="`date -u +"%Y-%m-%dT%H:%M:%SZ"`" --build-arg IMAGE_SOURCE_REVISION="`git rev-parse HEAD`" -f ../../dockerfiles/Dockerfile_3 -t "tripinsights/poi:1.0" 
+az acr build -r registryubr8272 --build-arg IMAGE_VERSION="1.0" --build-arg IMAGE_CREATE_DATE="`date -u +"%Y-%m-%dT%H:%M:%SZ"`" --build-arg IMAGE_SOURCE_REVISION="`git rev-parse HEAD`" -f ../../dockerfiles/Dockerfile_3 -t "tripinsights/poi:1.0" .
 
 >/src/trips
-az acr build -r registrybro8635  --build-arg IMAGE_VERSION="1.0" --build-arg IMAGE_CREATE_DATE="`date -u +"%Y-%m-%dT%H:%M:%SZ"`" --build-arg IMAGE_SOURCE_REVISION="`git rev-parse HEAD`" -f ../../dockerfiles/Dockerfile_4 -t "tripinsights/trips:1.0" .
+az acr build -r registryubr8272  --build-arg IMAGE_VERSION="1.0" --build-arg IMAGE_CREATE_DATE="`date -u +"%Y-%m-%dT%H:%M:%SZ"`" --build-arg IMAGE_SOURCE_REVISION="`git rev-parse HEAD`" -f ../../dockerfiles/Dockerfile_4 -t "tripinsights/trips:1.0" .
 
 >/src/tripviewer
-az acr build -r registrybro8635  --build-arg IMAGE_VERSION="1.0" --build-arg IMAGE_CREATE_DATE="`date -u +"%Y-%m-%dT%H:%M:%SZ"`" --build-arg IMAGE_SOURCE_REVISION="`git rev-parse HEAD`" -f ../../dockerfiles/Dockerfile_1 -t "tripinsights/tripviewer:1.0" .
+az acr build -r registryubr8272  --build-arg IMAGE_VERSION="1.0" --build-arg IMAGE_CREATE_DATE="`date -u +"%Y-%m-%dT%H:%M:%SZ"`" --build-arg IMAGE_SOURCE_REVISION="`git rev-parse HEAD`" -f ../../dockerfiles/Dockerfile_1 -t "tripinsights/tripviewer:1.0" .
 
 >/src/user-java
-az acr build -r registrybro8635  --build-arg IMAGE_VERSION="1.0" --build-arg IMAGE_CREATE_DATE="`date -u +"%Y-%m-%dT%H:%M:%SZ"`" --build-arg IMAGE_SOURCE_REVISION="`git rev-parse HEAD`" -f ../../dockerfiles/Dockerfile_0 -t "tripinsights/user-java:1.0" .
+az acr build -r registryubr8272  --build-arg IMAGE_VERSION="1.0" --build-arg IMAGE_CREATE_DATE="`date -u +"%Y-%m-%dT%H:%M:%SZ"`" --build-arg IMAGE_SOURCE_REVISION="`git rev-parse HEAD`" -f ../../dockerfiles/Dockerfile_0 -t "tripinsights/user-java:1.0" .
 
 >/src/userprofile
-az acr build -r registrybro8635  --build-arg IMAGE_VERSION="1.0" --build-arg IMAGE_CREATE_DATE="`date -u +"%Y-%m-%dT%H:%M:%SZ"`" --build-arg IMAGE_SOURCE_REVISION="`git rev-parse HEAD`" -f ../../dockerfiles/Dockerfile_2 -t "tripinsights/userprofile:1.0" .
+az acr build -r registryubr8272  --build-arg IMAGE_VERSION="1.0" --build-arg IMAGE_CREATE_DATE="`date -u +"%Y-%m-%dT%H:%M:%SZ"`" --build-arg IMAGE_SOURCE_REVISION="`git rev-parse HEAD`" -f ../../dockerfiles/Dockerfile_2 -t "tripinsights/userprofile:1.0" .
