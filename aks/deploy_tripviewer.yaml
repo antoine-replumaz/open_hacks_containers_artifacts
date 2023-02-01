@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: tripviewer
+  namespace: web
 spec:
   replicas: 1
   selector:
@@ -18,11 +19,12 @@ spec:
       - name: tripviewer
         image: registryubr8272.azurecr.io/tripinsights/tripviewer:1.0
         env:
+        - name: USERPROFILE_API_ENDPOINT
+          value: ""
+        - name: TRIPS_API_ENDPOINT
+          value: ""
         - name: ASPNETCORE_ENVIRONMENT
           value: "Production"
-        envFrom:
-        - secretRef:
-            name: appli-secret
         ports:
           - name: tripviewer
             containerPort: 8082
@@ -46,18 +48,19 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: aks-helloworld
+  name: appli-ingress
+  namespace: web
   annotations:
     kubernetes.io/ingress.class: addon-http-application-routing
 spec:
   rules:
-  - host: aks-helloworld.<CLUSTER_SPECIFIC_DNS_ZONE>    
+  - host: tripviewer.aks-team8--rg-3-team8-f50d52-3beab19f.hcp.northeurope.azmk8s.io
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service: 
-            name: aks-helloworld
+            name: tripviewer
             port: 
-              number: 80
+              number: 8082
