@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: appli
+  name: poi
 spec:
   replicas: 1
   selector:
@@ -18,14 +18,11 @@ spec:
       - name: poi
         image: registryubr8272.azurecr.io/tripinsights/poi:1.0
         env:
-        - name: SQL_PASSWORD
-          value: "yourStrong*Password1"
-        - name: SQL_USER
-          value: "sqladminuBr8272"
-        - name: SQL_SERVER
-          value: "sqlserverubr8272.database.windows.net"
         - name: ASPNETCORE_ENVIRONMENT
           value: "Production"
+        envFrom:
+        - secretRef:
+            name: appli-secret
         ports:
           - name: poi
             containerPort: 8080

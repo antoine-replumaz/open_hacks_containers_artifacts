@@ -1,6 +1,15 @@
 az group create --name rg-team8 --location francecentral
 az aks create -g rg-team8  -n aks-team8 --enable-managed-identity --node-count 3 --enable-addons monitoring --enable-msi-auth-for-monitoring  --generate-ssh-keys
 
+# Attach ACR to an existing AKS 
+az aks update -n aks-team8 -g rg-team8 --attach-acr registryubr8272
+
+# Apply yaml config
+kubectl apply -f <path-to-yaml>
+
+# Delete a deployment if needed
+kubectl delete -f <path-to-yaml>
+
 Server=tcp:sqlserverubr8272.database.windows.net,1433;Initial Catalog=mydrivingDB;Persist Security Info=False;User ID=sqladminuBr8272;Password={your_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;
 
 az group create --name rg-3-team8 --location northeurope

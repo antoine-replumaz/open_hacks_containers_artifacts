@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tripviewer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tripviewer
+  template:
+    metadata:
+      labels:
+        app: tripviewer
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+      - name: tripviewer
+        image: registryubr8272.azurecr.io/tripinsights/tripviewer:1.0
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Production"
+        envFrom:
+        - secretRef:
+            name: appli-secret
+        ports:
+          - name: tripviewer
+            containerPort: 8082
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          periodSeconds: 5
+          initialDelaySeconds: 2
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tripviewer
+spec:
+  ports:
+  - port: 8082
+  selector:
+    app: tripviewer

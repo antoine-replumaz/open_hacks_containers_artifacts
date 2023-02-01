@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trips
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trips
+  template:
+    metadata:
+      labels:
+        app: trips
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+      - name: trips
+        image: registryubr8272.azurecr.io/tripinsights/trips:1.0
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Production"
+        envFrom:
+        - secretRef:
+            name: appli-secret
+        ports:
+          - name: trips
+            containerPort: 8081
+        livenessProbe:
+          httpGet:
+            path: api/trips/healthcheck
+            port: 80
+          periodSeconds: 5
+          initialDelaySeconds: 2
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: trips
+spec:
+  ports:
+  - port: 8081
+  selector:
+    app: trips
