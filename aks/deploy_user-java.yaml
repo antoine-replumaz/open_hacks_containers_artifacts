@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-java
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-java
+  template:
+    metadata:
+      labels:
+        app: user-java
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+      - name: user-java
+        image: registryubr8272.azurecr.io/tripinsights/user-java:1.0
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Production"
+        envFrom:
+        - secretRef:
+            name: appli-secret
+        ports:
+          - name: user-java
+            containerPort: 8083
+        livenessProbe:
+          httpGet:
+            path: api/user-java/healthcheck
+            port: 80
+          periodSeconds: 5
+          initialDelaySeconds: 2
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-java
+spec:
+  ports:
+  - port: 8083
+  selector:
+    app: user-java
