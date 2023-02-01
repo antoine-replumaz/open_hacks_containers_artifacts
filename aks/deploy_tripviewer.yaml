@@ -13,54 +13,45 @@ spec:
       labels:
         app: tripviewer
     spec:
-      nodeSelector:
-        "kubernetes.io/os": linux
       containers:
       - name: tripviewer
+        resources:
+          requests: 
+            cpu: 100m 
+            memory: 128Mi 
+          limits: 
+            cpu: 250m
+            memory: 256Mi
         image: registryubr8272.azurecr.io/tripinsights/tripviewer:1.0
-        env:
-        - name: USERPROFILE_API_ENDPOINT
-          value: ""
-        - name: TRIPS_API_ENDPOINT
-          value: ""
-        - name: ASPNETCORE_ENVIRONMENT
-          value: "Production"
         ports:
-          - name: tripviewer
-            containerPort: 8082
+          - containerPort: 80
+            name: http
+            protocol: TCP
         livenessProbe:
           httpGet:
             path: /
             port: 80
           periodSeconds: 5
           initialDelaySeconds: 2
+        env:
+        - name: USERPROFILE_API_ENDPOINT
+          value: "http://userprofile.api.svc.cluster.local"
+        - name: TRIPS_API_ENDPOINT
+          value: "http://trips.api.svc.cluster.local"
+        - name: BING_MAPS_KEY
+          value: ""
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: tripviewer
+  namespace: web
 spec:
-  ports:
-  - port: 8082
+  type: ClusterIP
   selector:
     app: tripviewer
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: appli-ingress
-  namespace: web
-  annotations:
-    kubernetes.io/ingress.class: addon-http-application-routing
-spec:
-  rules:
-  - host: tripviewer.aks-team8--rg-3-team8-f50d52-3beab19f.hcp.northeurope.azmk8s.io
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service: 
-            name: tripviewer
-            port: 
-              number: 8082
+  ports:
+  - protocol: TCP
+    name: http
+    port: 80
+    targetPort: 80
