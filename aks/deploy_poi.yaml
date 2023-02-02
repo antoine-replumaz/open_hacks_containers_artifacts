@@ -13,11 +13,19 @@ spec:
       labels:
         app: poi
     spec:
-      nodeSelector:
-        "kubernetes.io/os": linux
       containers:
       - name: poi
+        resources:
+          requests: 
+            cpu: 100m 
+            memory: 128Mi 
+          limits: 
+            cpu: 250m
+            memory: 256Mi
         image: registryubr8272.azurecr.io/tripinsights/poi:1.0
+        ports:
+          - name: poi
+            containerPort: 8080
         env:
         - name: ASPNETCORE_ENVIRONMENT
           value: "Production"
@@ -28,22 +36,18 @@ spec:
         envFrom:
         - secretRef:
             name: appli-secret
-        ports:
-          - name: poi
-            containerPort: 8080
-        livenessProbe:
-          httpGet:
-            path: api/poi/healthcheck
-            port: 80
-          periodSeconds: 5
-          initialDelaySeconds: 2
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: poi
+  namespace: api
 spec:
-  ports:
-  - port: 8080
+  type: ClusterIP
   selector:
     app: poi
+  ports:
+  - protocol: TCP
+    name: http
+    port: 80
+    targetPort: 8080

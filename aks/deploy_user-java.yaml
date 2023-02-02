@@ -13,33 +13,37 @@ spec:
       labels:
         app: user-java
     spec:
-      nodeSelector:
-        "kubernetes.io/os": linux
       containers:
       - name: user-java
+        resources:
+          requests: 
+            cpu: 100m 
+            memory: 128Mi 
+          limits: 
+            cpu: 250m
+            memory: 256Mi
         image: registryubr8272.azurecr.io/tripinsights/user-java:1.0
-        env:
-        - name: ASPNETCORE_ENVIRONMENT
-          value: "Production"
-        envFrom:
-        - secretRef:
-            name: appli-secret
         ports:
           - name: user-java
             containerPort: 8083
-        livenessProbe:
-          httpGet:
-            path: api/user-java/healthcheck
-            port: 80
-          periodSeconds: 5
-          initialDelaySeconds: 2
+        env:
+        - name: PORT
+          value: "8083"
+        envFrom:
+        - secretRef:
+            name: appli-secret
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: user-java
+  namespace: api
 spec:
-  ports:
-  - port: 8083
+  type: ClusterIP
   selector:
     app: user-java
+  ports:
+  - protocol: TCP
+    name: http
+    port: 80
+    targetPort: 8083

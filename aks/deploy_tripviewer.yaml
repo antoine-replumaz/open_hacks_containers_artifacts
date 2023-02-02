@@ -39,7 +39,7 @@ spec:
         - name: TRIPS_API_ENDPOINT
           value: "http://trips.api.svc.cluster.local"
         - name: BING_MAPS_KEY
-          value: ""
+          value: "AlGoNEbq-23TdvACQUmwy-amhLLAypVAZgq5a2tO35jpU4BIRhRPMFsPlvML0ZS3"
 ---
 apiVersion: v1
 kind: Service

@@ -13,33 +13,41 @@ spec:
       labels:
         app: trips
     spec:
-      nodeSelector:
-        "kubernetes.io/os": linux
       containers:
       - name: trips
+        resources:
+          requests: 
+            cpu: 100m 
+            memory: 128Mi 
+          limits: 
+            cpu: 250m
+            memory: 256Mi
         image: registryubr8272.azurecr.io/tripinsights/trips:1.0
-        env:
-        - name: ASPNETCORE_ENVIRONMENT
-          value: "Production"
-        envFrom:
-        - secretRef:
-            name: appli-secret
         ports:
           - name: trips
             containerPort: 8081
-        livenessProbe:
-          httpGet:
-            path: api/trips/healthcheck
-            port: 80
-          periodSeconds: 5
-          initialDelaySeconds: 2
+        env:
+        - name: OPENAPI_DOCS_URI
+          value: "http://trips.api.svc.cluster.local"
+        - name: DEBUG_LOGGING
+          value: "true"
+        - name: PORT
+          value: '8081'
+        envFrom:
+        - secretRef:
+            name: appli-secret
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: trips
+  namespace: api
 spec:
-  ports:
-  - port: 8081
+  type: ClusterIP
   selector:
     app: trips
+  ports:
+  - protocol: TCP
+    name: http
+    port: 80
+    targetPort: 8081
