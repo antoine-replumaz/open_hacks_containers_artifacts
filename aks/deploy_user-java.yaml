@@ -23,15 +23,23 @@ spec:
             cpu: 250m
             memory: 256Mi
         image: registryubr8272.azurecr.io/tripinsights/user-java:1.0
+        volumeMounts:
+        - name: secrets-store
+          mountPath: "/secrets"
+          readOnly: true
         ports:
           - name: user-java
             containerPort: 8083
         env:
         - name: PORT
           value: "8083"
-        envFrom:
-        - secretRef:
-            name: appli-secret
+      volumes:
+      - name: secrets-store
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: appli-secret-from-kv
 ---
 apiVersion: v1
 kind: Service

@@ -23,6 +23,10 @@ spec:
             cpu: 250m
             memory: 256Mi
         image: registryubr8272.azurecr.io/tripinsights/poi:1.0
+        volumeMounts:
+        - name: secrets-store
+          mountPath: "/secrets"
+          readOnly: true
         ports:
           - name: poi
             containerPort: 8080
@@ -33,9 +37,14 @@ spec:
           value: 'http://0.0.0.0'
         - name: WEB_PORT
           value: '8080'
-        envFrom:
-        - secretRef:
-            name: appli-secret
+      volumes:
+      - name: secrets-store
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: appli-secret-from-kv
+            
 ---
 apiVersion: v1
 kind: Service
