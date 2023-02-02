@@ -1,0 +1,9 @@
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  name: tlsversion
+  namespace: istio-system
+spec:
+  meshConfig:
+    meshMTLS:
+      minProtocolVersion: TLSV1_3
